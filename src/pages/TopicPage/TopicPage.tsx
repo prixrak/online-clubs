@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { collections } from "@constants/collections";
 import { useParams } from "react-router-dom";
-import { DataStatus } from "@enums/DataState";
+import { DataStatus } from "@enums/DataStatus";
 import { IMessage } from "@interfaces/IMessage";
 
 interface Props {}
@@ -35,7 +35,6 @@ export const TopicPage: FC<Props> = () => {
   });
 
   const sendMessage = async () => {
-    console.log("send message");
     if (userLoadingStatus === DataStatus.Success) {
       await addDoc<Omit<IMessage, "id">>(clubTopicMessagesRef, {
         text: message,

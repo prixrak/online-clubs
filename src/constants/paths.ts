@@ -4,4 +4,5 @@ export const paths = {
   second: "/second",
   club: "/club",
   topic: "topic",
+  login: "/login",
 };

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useStyles } from "./MainPage.styles";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 import { CollectionReference, addDoc, collection } from "firebase/firestore";
-import { DataStatus } from "@enums/DataState";
+import { DataStatus } from "@enums/DataStatus";
 import { IClub } from "@interfaces/IClub";
 import { collections } from "@constants/collections";
 import { ClubCard } from "./components/ClubCard";

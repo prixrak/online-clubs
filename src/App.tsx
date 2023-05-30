@@ -13,6 +13,8 @@ import {
   useInitFirestore,
 } from "reactfire";
 import { initializeFirestore } from "firebase/firestore";
+import "normalize.css";
+import { LoginPage } from "@pages/LoginPage";
 
 const App = () => {
   const app = useFirebaseApp();
@@ -25,21 +27,19 @@ const App = () => {
 
   return (
     <FirestoreProvider sdk={firestoreInstance}>
-      <Routes>
-        <Route
-          element={
-            <AuthProvider sdk={auth}>
-              <AuthProtectedRoute />
-            </AuthProvider>
-          }>
-          <Route path={paths.home} element={<MainPage />} />
-          <Route path={paths.second} element={<SecondPage />} />
-          <Route path={`${paths.club}/:id`} element={<SecondPage />}>
-            <Route path={`${paths.topic}/:topicId`} element={<TopicPage />} />
+      <AuthProvider sdk={auth}>
+        <Routes>
+          <Route path='*' element={<HomeRedirect />} />
+          <Route path={paths.login} element={<LoginPage />} />
+          <Route element={<AuthProtectedRoute />}>
+            <Route path={paths.home} element={<MainPage />} />
+            <Route path={paths.second} element={<SecondPage />} />
+            <Route path={`${paths.club}/:id`} element={<SecondPage />}>
+              <Route path={`${paths.topic}/:topicId`} element={<TopicPage />} />
+            </Route>
           </Route>
-        </Route>
-        <Route path='*' element={<HomeRedirect />} />
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </FirestoreProvider>
   );
 };

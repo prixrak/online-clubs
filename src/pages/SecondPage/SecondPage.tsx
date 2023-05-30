@@ -11,7 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import ImageIcon from "@mui/icons-material/Image";
-import { DataStatus } from "@enums/DataState";
+import { DataStatus } from "@enums/DataStatus";
 import { paths } from "@constants/paths";
 import { Grid, Link, ListItemButton } from "@mui/material";
 
@@ -22,7 +22,7 @@ export const SecondPage: FC<Props> = () => {
   const { id } = useParams();
 
   const firestore = useFirestore();
-  console.log("firestore", firestore);
+
   const clubTopicsRef = collection(
     firestore,
     `${collections.clubs}/${id}/${collections.topics}`
@@ -32,10 +32,7 @@ export const SecondPage: FC<Props> = () => {
     useFirestoreCollectionData(clubTopicsRef, {
       idField: "id",
     });
-  console.log(
-    "clubTopicsCollectionLoadingStatus",
-    clubTopicsCollectionLoadingStatus
-  );
+
   return (
     <div>
       <h1>Topics</h1>

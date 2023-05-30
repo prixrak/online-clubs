@@ -1,30 +1,33 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useStyles } from "./AuthProtectedRoute.styles";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { DefaultLayout } from "@components/DefaultLayout";
-import { useAuth, useSigninCheck } from "reactfire";
-import { LoginPage } from "@pages/LoginPage";
-import { signOut } from "firebase/auth";
-import { Button } from "@mui/material";
+import { useSigninCheck } from "reactfire";
+import { paths } from "@constants/paths";
+import { DataStatus } from "@enums/DataStatus";
 
 interface Props {}
 
 export const AuthProtectedRoute: FC<Props> = () => {
   const styles = useStyles();
-  const { data: signInCheckResult } = useSigninCheck();
-  const auth = useAuth();
+  const { data: signInCheckResult, status } = useSigninCheck();
+  const navigate = useNavigate();
 
-  const logOut = () => {
-    signOut(auth);
-  };
+  useEffect(() => {
+    if (!signInCheckResult.signedIn) {
+      navigate(paths.login);
+    }
+  }, [signInCheckResult.signedIn]);
 
   return (
     <>
-      <Button onClick={logOut}>Log out </Button>
-      <DefaultLayout>
-        {!signInCheckResult.signedIn ? <LoginPage /> : <Outlet />}
-        {/* <Outlet /> */}
-      </DefaultLayout>
+      {status === DataStatus.Loading ? (
+        <> Loadingg...</>
+      ) : (
+        <DefaultLayout>
+          <Outlet />
+        </DefaultLayout>
+      )}
     </>
   );
 };

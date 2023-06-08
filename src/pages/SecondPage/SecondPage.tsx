@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, Suspense } from "react";
 import { useStyles } from "./SecondPage.styles";
 import { CollectionReference, collection } from "firebase/firestore";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
@@ -19,13 +19,13 @@ interface Props {}
 
 export const SecondPage: FC<Props> = () => {
   const styles = useStyles();
-  const { id } = useParams();
+  const { clubId } = useParams();
 
   const firestore = useFirestore();
 
   const clubTopicsRef = collection(
     firestore,
-    `${collections.clubs}/${id}/${collections.topics}`
+    `${collections.clubs}/${clubId}/${collections.topics}`
   ) as CollectionReference<ITopic>;
 
   const { status: clubTopicsCollectionLoadingStatus, data: clubTopics } =
@@ -34,41 +34,34 @@ export const SecondPage: FC<Props> = () => {
     });
 
   return (
-    <div>
-      <h1>Topics</h1>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          {clubTopicsCollectionLoadingStatus === DataStatus.Loading ? (
-            <div>loading</div>
-          ) : (
-            <List>
-              {clubTopics.map((topic) => (
-                <Link
-                  component={RectRouterLink}
-                  key={topic.id}
-                  to={`${paths.club}/${id}/${paths.topic}/${topic.id}`}>
-                  <ListItemButton>
-                    <ListItem>
-                      <ListItemAvatar>
-                        <Avatar>
-                          <ImageIcon />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={topic.name}
-                        secondary={topic.description}
-                      />
-                    </ListItem>
-                  </ListItemButton>
-                </Link>
-              ))}
-            </List>
-          )}
-        </Grid>
-        <Grid item xs={9}>
-          <Outlet />
-        </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={2}>
+        <List>
+          {clubTopics.map((topic) => (
+            <Link
+              component={RectRouterLink}
+              key={topic.id}
+              to={`${paths.club}/${clubId}/${paths.topic}/${topic.id}/${paths.messages}`}>
+              <ListItemButton>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <ImageIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={topic.name}
+                    secondary={topic.description}
+                  />
+                </ListItem>
+              </ListItemButton>
+            </Link>
+          ))}
+        </List>
       </Grid>
-    </div>
+      <Grid item xs={10}>
+        <Outlet />
+      </Grid>
+    </Grid>
   );
 };

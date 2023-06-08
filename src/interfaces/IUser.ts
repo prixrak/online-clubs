@@ -1,4 +1,3 @@
-export interface IUser {
-  id: string;
-  name: string;
-}
+import { User } from "firebase/auth";
+
+export interface IUser extends User {}

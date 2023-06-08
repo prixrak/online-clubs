@@ -5,4 +5,6 @@ export const paths = {
   club: "/club",
   topic: "topic",
   login: "/login",
+  messages: "messages",
+  files: "files",
 };

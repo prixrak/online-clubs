@@ -1,72 +1,80 @@
-import { FC, useState } from "react";
+import { FC, Suspense } from "react";
 import { useStyles } from "./TopicPage.styles";
-import { Button, TextField } from "@mui/material";
-import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
-import {
-  CollectionReference,
-  addDoc,
-  collection,
-  serverTimestamp,
-} from "firebase/firestore";
+import { Link, Stack, Typography } from "@mui/material";
+import { useFirestore, useFirestoreDocData } from "reactfire";
+import { DocumentReference, doc } from "firebase/firestore";
 import { collections } from "@constants/collections";
-import { useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { DataStatus } from "@enums/DataStatus";
-import { IMessage } from "@interfaces/IMessage";
+import { ReactComponent as LogoIcon } from "@assets/logoIcon.svg";
+import { ReactComponent as FilesIcon } from "@assets/files.svg";
+
+import { NavLink as RectRouterLink } from "react-router-dom";
+import { paths } from "@constants/paths";
+import classNames from "classnames";
+import { ITopic } from "@interfaces/ITopic";
 
 interface Props {}
 
 export const TopicPage: FC<Props> = () => {
   const styles = useStyles();
-  const [message, setMessage] = useState("");
-  const { id, topicId } = useParams();
-  const { status: userLoadingStatus, data: user } = useUser();
+  const { clubId, topicId } = useParams();
 
   const firestore = useFirestore();
-  const clubTopicMessagesRef = collection(
+
+  const topicRef = doc(
     firestore,
-    `${collections.clubs}/${id}/${collections.topics}/${topicId}/${collections.messages}`
-  ) as CollectionReference<IMessage>;
+    `${collections.clubs}/${clubId}/${collections.topics}/${topicId}`
+  ) as DocumentReference<ITopic>;
 
-  const {
-    status: clubTopicMessagesCollectionLoadingStatus,
-    data: clubTopicMessages,
-  } = useFirestoreCollectionData(clubTopicMessagesRef, {
-    idField: "id",
-  });
+  const { status: topicLoadingStatus, data: topic } =
+    useFirestoreDocData(topicRef);
 
-  const sendMessage = async () => {
-    if (userLoadingStatus === DataStatus.Success) {
-      await addDoc<Omit<IMessage, "id">>(clubTopicMessagesRef, {
-        text: message,
-        userId: user?.uid ?? "",
-        createdAt: serverTimestamp(),
-      });
-      setMessage("");
-    }
+  const isActiveTab = (path: string) => {
+    return window.location.pathname.includes(path);
   };
-
+  const tabs = [
+    { name: "Chat", path: paths.messages, icon: LogoIcon },
+    { name: "Files", path: paths.files, icon: FilesIcon },
+  ];
   return (
-    <div className={styles.root}>
-      <div>
-        {clubTopicMessagesCollectionLoadingStatus === DataStatus.Loading ? (
-          <div>loading</div>
-        ) : (
-          clubTopicMessages.map((message) => (
-            <div key={message.id}>{message.text}</div>
-          ))
-        )}
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className={styles.root}>
+        <Stack className={styles.topBar}>
+          <Stack className={styles.header}>
+            <Stack flexDirection='column' rowGap='4px'>
+              <div className={styles.title}>{topic.name}</div>
+              <div className={styles.subTitle}>{topic.description}</div>
+            </Stack>
+          </Stack>
+          <Stack className={styles.navigation} flexDirection='row'>
+            {tabs.map((tab) => (
+              <Link
+                key={tab.name}
+                className={classNames(styles.tab, {
+                  [styles.activeTab]: isActiveTab(tab.path),
+                })}
+                component={RectRouterLink}
+                to={tab.path}>
+                <Stack gap='12px' alignItems='center' flexDirection='row'>
+                  <tab.icon
+                    className={classNames(styles.tabLogo, {
+                      [styles.activeTabLogo]: isActiveTab(tab.path),
+                    })}
+                  />
+                  <div className={styles.text}>{tab.name}</div>
+                  {isActiveTab(tab.path) && (
+                    <div className={styles.tabIndicator}></div>
+                  )}
+                </Stack>
+              </Link>
+            ))}
+          </Stack>
+        </Stack>
+        <div className={styles.subPage}>
+          <Outlet />
+        </div>
       </div>
-      <div>
-        <TextField
-          placeholder='type here'
-          variant='standard'
-          value={message}
-          onChange={(event) => {
-            setMessage(event.target.value);
-          }}
-        />
-        <Button onClick={sendMessage}>Send msg</Button>
-      </div>
-    </div>
+    </Suspense>
   );
 };

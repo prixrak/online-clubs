@@ -3,4 +3,5 @@ export const collections = {
   users: "users",
   topics: "topics",
   messages: "messages",
+  myClubs: "myClubs",
 };

@@ -1,6 +1,6 @@
 import { paths } from "@constants/paths";
 import { Link } from "@mui/material";
-import { FC } from "react";
+import { FC, Suspense } from "react";
 import { Link as RectRouterLink } from "react-router-dom";
 
 export const HomeRedirect: FC = () => {

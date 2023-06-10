@@ -4,4 +4,5 @@ export const collections = {
   topics: "topics",
   messages: "messages",
   myClubs: "myClubs",
+  members: "members",
 };

@@ -8,6 +8,7 @@ import { IClub } from "@interfaces/IClub";
 import { paths } from "@constants/paths";
 import { Link as RectRouterLink } from "react-router-dom";
 import { CustomAvatar } from "@components/CustomAvatar";
+import { MAIN_TOPIC_ID } from "@constants/ids";
 
 interface Props {
   clubData: IClub;
@@ -18,7 +19,7 @@ export const ClubCard: FC<Props> = ({ clubData }) => {
   return (
     <Link
       component={RectRouterLink}
-      to={`${paths.club}/${clubData.id}`}
+      to={`${paths.club}/${clubData.id}/${paths.topic}/${MAIN_TOPIC_ID}/${paths.messages}`}
       sx={{ textDecoration: "none", color: "inherit" }}>
       <Stack className={styles.root}>
         <div className={styles.imgContainer}>
@@ -64,9 +65,12 @@ export const ClubCard: FC<Props> = ({ clubData }) => {
             component='div'>
             {clubData.name}
           </Typography>
-          <Typography variant='body2'>
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+          <Typography
+            variant='body2'
+            sx={{
+              wordWrap: "break-word",
+            }}>
+            {clubData.description}
           </Typography>
           <div className={styles.glow}></div>
         </Stack>

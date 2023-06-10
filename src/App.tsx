@@ -2,7 +2,6 @@ import { AuthProtectedRoute } from "@components/AuthProtectedRoute";
 import { HomeRedirect } from "@components/HomeRedirect";
 import { paths } from "@constants/paths";
 import { MainPage } from "@pages/MainPage";
-import { SecondPage } from "@pages/SecondPage";
 import { TopicPage } from "@pages/TopicPage";
 import { getAuth } from "firebase/auth";
 import { Route, Routes } from "react-router-dom";
@@ -39,11 +38,11 @@ const App = () => {
             <Route path={paths.login} element={<LoginPage />} />
             <Route element={<AuthProtectedRoute />}>
               <Route path={paths.home} element={<MainPage />} />
-              <Route path={`${paths.club}/:clubId`} element={<SecondPage />}>
-                <Route path={`${paths.topic}/:topicId`} element={<TopicPage />}>
-                  <Route path={paths.messages} element={<MessagesPage />} />
-                  <Route path={paths.files} element={<FilesPage />} />
-                </Route>
+              <Route
+                path={`${paths.club}/:clubId/${paths.topic}/:topicId`}
+                element={<TopicPage />}>
+                <Route path={paths.messages} element={<MessagesPage />} />
+                <Route path={paths.files} element={<FilesPage />} />
               </Route>
             </Route>
           </Routes>

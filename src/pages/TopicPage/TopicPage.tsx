@@ -27,8 +27,12 @@ export const TopicPage: FC<Props> = () => {
     `${collections.clubs}/${clubId}/${collections.topics}/${topicId}`
   ) as DocumentReference<ITopic>;
 
-  const { status: topicLoadingStatus, data: topic } =
-    useFirestoreDocData(topicRef);
+  const { status: topicLoadingStatus, data: topic } = useFirestoreDocData(
+    topicRef,
+    {
+      idField: "id",
+    }
+  );
 
   const isActiveTab = (path: string) => {
     return window.location.pathname.includes(path);

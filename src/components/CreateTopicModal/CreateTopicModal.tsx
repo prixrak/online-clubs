@@ -15,7 +15,7 @@ import {
 } from "@hooks/useClubsCollectionRef";
 
 interface Props
-  extends Pick<React.ComponentProps<typeof CustomModal>, "open" | "onClose"> {
+  extends Omit<React.ComponentProps<typeof CustomModal>, "children"> {
   clubId: string;
 }
 

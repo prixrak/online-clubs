@@ -44,6 +44,7 @@ import { ReactComponent as LogoIcon } from "@assets/logoIcon.svg";
 import { collections } from "@constants/collections";
 import { Roles } from "@enums/Roles";
 import { IClubMember } from "@interfaces/IUser";
+import { DetailClubModal } from "@components/DetailClubModal";
 
 interface Props {}
 
@@ -69,6 +70,12 @@ export const SideBar: FC<Props> = () => {
     isModalOpen: isNewTopicModalOpen,
     openModal: openNewTopicModal,
     closeModal: closeNewTopicModal,
+  } = useModalState();
+
+  const {
+    isModalOpen: isDetailClubModalOpen,
+    openModal: openDetailClubModal,
+    closeModal: closeDetailClubModal,
   } = useModalState();
 
   const { myClubsCollectionRef } = useMyClubsCollectionRef();
@@ -166,40 +173,46 @@ export const SideBar: FC<Props> = () => {
           <Stack width='100%'>
             <div className={styles.mainBlockContainer}>
               {club ? (
-                <Stack direction='row' className={styles.mainBlock}>
-                  <CustomAvatar
-                    sx={{
-                      width: 48,
-                      height: 48,
-                    }}
-                    src={club?.imgUrl}
-                  />
-                  <Stack gap='4px'>
-                    <div className={styles.mainBlockTitle}>{club?.name}</div>
-                    <div className={styles.mainBlockSubTitle}>
-                      {`${clubMembers.length} member${
-                        clubMembers.length > 1 ? "s" : ""
-                      }`}
-                    </div>
-                  </Stack>
-                  {!clubMembers.some(
-                    (clubMember) => clubMember.id === currentUser?.uid
-                  ) && (
-                    <Button
-                      color='secondary'
-                      size='medium'
-                      variant='text'
+                <div
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  onClick={openDetailClubModal}>
+                  <Stack direction='row' className={styles.mainBlock}>
+                    <CustomAvatar
                       sx={{
-                        width: "fit-content",
-                        textTransform: "none",
-                        marginLeft: "auto",
-                        height: "fit-content",
+                        width: 48,
+                        height: 48,
                       }}
-                      onClick={joinClub}>
-                      Join club
-                    </Button>
-                  )}
-                </Stack>
+                      src={club?.imgUrl}
+                    />
+                    <Stack gap='4px'>
+                      <div className={styles.mainBlockTitle}>{club?.name}</div>
+                      <div className={styles.mainBlockSubTitle}>
+                        {`${clubMembers.length} member${
+                          clubMembers.length > 1 ? "s" : ""
+                        }`}
+                      </div>
+                    </Stack>
+                    {!clubMembers.some(
+                      (clubMember) => clubMember.id === currentUser?.uid
+                    ) && (
+                      <Button
+                        color='secondary'
+                        size='medium'
+                        variant='text'
+                        sx={{
+                          width: "fit-content",
+                          textTransform: "none",
+                          marginLeft: "auto",
+                          height: "fit-content",
+                        }}
+                        onClick={joinClub}>
+                        Join club
+                      </Button>
+                    )}
+                  </Stack>
+                </div>
               ) : (
                 <Stack flexDirection='row' alignItems='center' gap='16px'>
                   <LogoIcon
@@ -365,6 +378,14 @@ export const SideBar: FC<Props> = () => {
           open={isNewTopicModalOpen}
           onClose={closeNewTopicModal}
           clubId={clubId}
+        />
+      )}
+      {club && (
+        <DetailClubModal
+          open={isDetailClubModalOpen}
+          onClose={closeDetailClubModal}
+          club={club}
+          members={clubMembers}
         />
       )}
     </>

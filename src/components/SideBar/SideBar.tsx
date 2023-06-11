@@ -31,6 +31,7 @@ import classNames from "classnames";
 import {
   CollectionReference,
   addDoc,
+  deleteDoc,
   doc,
   query,
   setDoc,
@@ -161,10 +162,29 @@ export const SideBar: FC<Props> = () => {
       ),
       { role: Roles.Member }
     );
-    addDoc<Omit<IClubMember, "id">>(clubMembersCollectionRef, {
-      role: Roles.Member,
-    });
   };
+
+  const leaveClub = () => {
+    if (!club) {
+      return;
+    }
+    deleteDoc(
+      doc(
+        firestore,
+        `${collections.users}/${currentUser?.uid}/${collections.myClubs}/${club.id}`
+      )
+    );
+    deleteDoc(
+      doc(
+        firestore,
+        `${collections.clubs}/${club?.id}/${collections.members}/${currentUser?.uid}`
+      )
+    );
+  };
+
+  const isInClub = clubMembers.some(
+    (clubMember) => clubMember.id === currentUser?.uid
+  );
 
   return (
     <>
@@ -194,9 +214,8 @@ export const SideBar: FC<Props> = () => {
                         }`}
                       </div>
                     </Stack>
-                    {!clubMembers.some(
-                      (clubMember) => clubMember.id === currentUser?.uid
-                    ) && (
+
+                    {currentUser?.uid !== club?.createdBy && (
                       <Button
                         color='secondary'
                         size='medium'
@@ -207,8 +226,11 @@ export const SideBar: FC<Props> = () => {
                           marginLeft: "auto",
                           height: "fit-content",
                         }}
-                        onClick={joinClub}>
-                        Join club
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          isInClub ? leaveClub() : joinClub();
+                        }}>
+                        {isInClub ? "Leave Club" : "Join Club"}
                       </Button>
                     )}
                   </Stack>

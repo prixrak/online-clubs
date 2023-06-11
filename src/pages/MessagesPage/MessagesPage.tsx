@@ -70,11 +70,16 @@ export const MessagesPage: FC<Props> = () => {
     }
   }, [clubTopicMessages]);
 
-  return (
+  return !clubId || !topicId ? null : (
     <Stack className={styles.root}>
       <Stack className={styles.messages} gap='16px' ref={scrollContainerRef}>
         {clubTopicMessages.map((message) => (
-          <Message key={message.id} message={message} />
+          <Message
+            key={message.id}
+            message={message}
+            clubId={clubId}
+            topicId={topicId}
+          />
         ))}
       </Stack>
       <Stack

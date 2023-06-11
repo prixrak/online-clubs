@@ -31,4 +31,13 @@ export const useStyles = makeStyles({
     letterSpacing: 0.15,
     color: "#9B9C9E",
   },
+  messageBlock: {
+    "& svg": {
+      display: "none",
+    },
+
+    "&:hover svg": {
+      display: "block",
+    },
+  },
 });

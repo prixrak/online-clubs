@@ -113,6 +113,7 @@ export const SideBar: FC<Props> = () => {
   useEffect(() => {
     setIsShownTopics(isTopics);
   }, [isTopics]);
+  const isCanCreateTopic = currentUser?.uid === club?.createdBy;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -176,7 +177,9 @@ export const SideBar: FC<Props> = () => {
                   <Stack gap='4px'>
                     <div className={styles.mainBlockTitle}>{club?.name}</div>
                     <div className={styles.mainBlockSubTitle}>
-                      {clubMembers.length} members
+                      {`${clubMembers.length} member${
+                        clubMembers.length > 1 ? "s" : ""
+                      }`}
                     </div>
                   </Stack>
                   {!clubMembers.some(
@@ -278,29 +281,33 @@ export const SideBar: FC<Props> = () => {
                     <div>{name}</div>
                   </Link>
                 ))}
-                <Button
-                  color='secondary'
-                  size='medium'
-                  variant='text'
-                  onClick={isShownTopics ? openNewTopicModal : openNewClubModal}
-                  sx={{
-                    width: "100%",
-                    padding: "5px 24px",
-                    textTransform: "none",
-                    justifyContent: "flex-start",
-                    marginTop: "5px",
-                    position: "sticky",
-                    bottom: 0,
-                    backgroundColor: "#0D0F10",
-                    "&:hover": {
-                      backgroundColor: "#1A1D21",
-                    },
-                  }}>
-                  <Stack direction='row' gap='4px' alignItems='center'>
-                    <PlusCircleIcon />
-                    Create new {isShownTopics ? "topic" : "club"}
-                  </Stack>
-                </Button>
+                {isShownTopics && !isCanCreateTopic ? null : (
+                  <Button
+                    color='secondary'
+                    size='medium'
+                    variant='text'
+                    onClick={
+                      isShownTopics ? openNewTopicModal : openNewClubModal
+                    }
+                    sx={{
+                      width: "100%",
+                      padding: "5px 24px",
+                      textTransform: "none",
+                      justifyContent: "flex-start",
+                      marginTop: "5px",
+                      position: "sticky",
+                      bottom: 0,
+                      backgroundColor: "#0D0F10",
+                      "&:hover": {
+                        backgroundColor: "#1A1D21",
+                      },
+                    }}>
+                    <Stack direction='row' gap='4px' alignItems='center'>
+                      <PlusCircleIcon />
+                      Create new {isShownTopics ? "topic" : "club"}
+                    </Stack>
+                  </Button>
+                )}
               </Stack>
             </Stack>
           </Stack>

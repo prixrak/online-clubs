@@ -69,6 +69,11 @@ export const ClubCard: FC<Props> = ({ clubData }) => {
             variant='body2'
             sx={{
               wordWrap: "break-word",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: 5,
+              WebkitBoxOrient: "vertical",
             }}>
             {clubData.description}
           </Typography>

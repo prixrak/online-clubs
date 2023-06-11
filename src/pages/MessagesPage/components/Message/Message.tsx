@@ -1,16 +1,22 @@
-import { FC, Suspense } from "react";
+import { FC } from "react";
 import { useStyles } from "./Message.styles";
 import { CustomAvatar } from "@components/CustomAvatar";
 import { IMessage } from "@interfaces/IMessage";
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import format from "date-fns/format";
 import { useCurrentUser, useUser } from "@hooks/useClubsCollectionRef";
-
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import { deleteDoc, doc } from "firebase/firestore";
+import { useFirestore } from "reactfire";
+import { paths } from "@constants/paths";
+import { collections } from "@constants/collections";
 interface Props {
   message: IMessage;
+  clubId: string;
+  topicId: string;
 }
 
-export const Message: FC<Props> = ({ message }) => {
+export const Message: FC<Props> = ({ message, clubId, topicId }) => {
   const styles = useStyles();
   const { currentUser } = useCurrentUser();
   const createdAt = message.createdAt
@@ -18,19 +24,38 @@ export const Message: FC<Props> = ({ message }) => {
     : "...";
 
   const { user } = useUser({ userId: message.createdBy });
+  const firestore = useFirestore();
+
+  const isCurrentUserMessage = currentUser?.uid === message.createdBy;
+  const deleteMessage = () => {
+    deleteDoc(
+      doc(
+        firestore,
+        `${collections.clubs}/${clubId}/${collections.topics}/${topicId}/${collections.messages}/${message.id}`
+      )
+    );
+  };
 
   return (
     <Stack
       flexDirection='row'
       alignItems='flex-start'
-      marginLeft={currentUser?.uid === message.createdBy ? "auto" : "0"}
+      marginLeft={isCurrentUserMessage ? "auto" : "0"}
       gap='24px'
       className={styles.root}>
-      {currentUser?.uid === message.createdBy ? (
-        <Stack flexDirection='row' gap='16px' alignItems='flex-start'>
+      {isCurrentUserMessage ? (
+        <Stack
+          flexDirection='row'
+          gap='16px'
+          alignItems='flex-start'
+          className={styles.messageBlock}>
           <div className={styles.messageText}>{message.text}</div>
-
-          <div className={styles.messageTime}>{createdAt}</div>
+          <Stack alignItems='center' gap='10px'>
+            <div className={styles.messageTime}>{createdAt}</div>
+            <Button onClick={deleteMessage}>
+              <DeleteForeverOutlinedIcon sx={{ color: "#fff" }} />
+            </Button>
+          </Stack>
         </Stack>
       ) : (
         <>

@@ -12,7 +12,9 @@ export const DefaultLayout: FC<Props> = ({ children }) => {
 
   return (
     <div className={styles.root}>
-      <SideBar />
+      <Suspense fallback={<Loader />}>
+        <SideBar />
+      </Suspense>
       <Suspense fallback={<Loader />}>
         <div className={styles.body}>{children}</div>
       </Suspense>

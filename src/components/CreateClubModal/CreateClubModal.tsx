@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useStyles } from "./CreateClubModal.styles";
 import { CustomModal } from "@components/CustomModal";
 import {
@@ -7,10 +7,8 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  MenuItem,
   Radio,
   RadioGroup,
-  Select,
   Stack,
   TextField,
 } from "@mui/material";
@@ -19,23 +17,11 @@ import ImageUploader from "@components/ImageUploader/ImageUploader";
 import {
   useClubsCollectionRef,
   useCurrentUser,
-  useUsersCollectionRef,
 } from "@hooks/useClubsCollectionRef";
-import {
-  CollectionReference,
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
+import { addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { IClub, IClubFormValues } from "@interfaces/IClub";
-import { ITopic } from "@interfaces/ITopic";
-import { collections } from "@constants/collections";
-import { IMyClub } from "@interfaces/IClub";
 import { useStorage } from "reactfire";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { CustomAvatar } from "@components/CustomAvatar";
 import { Field, FieldProps, Form, Formik } from "formik";
 import { ClubType } from "@enums/ClubTypes";
 import { ClubCategory } from "@enums/ClubCategory";
@@ -46,7 +32,6 @@ interface Props
 export const CreateClubModal: FC<Props> = ({ open, onClose }) => {
   const styles = useStyles();
   const { clubsCollectionRef } = useClubsCollectionRef();
-  const { usersCollectionRef } = useUsersCollectionRef();
   const { currentUser } = useCurrentUser();
   const storage = useStorage();
 
@@ -66,6 +51,7 @@ export const CreateClubModal: FC<Props> = ({ open, onClose }) => {
         createdAt: serverTimestamp(),
         createdBy: currentUser?.uid ?? null,
       });
+      setSelectedCategories([]);
 
       if (!image) return;
 
@@ -101,7 +87,6 @@ export const CreateClubModal: FC<Props> = ({ open, onClose }) => {
   ) => {
     setSelectedCategories(value);
   };
-  console.log(selectedCategories);
 
   return (
     <CustomModal open={open} onClose={onClose}>

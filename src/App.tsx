@@ -16,7 +16,6 @@ import { initializeFirestore } from "firebase/firestore";
 import "normalize.css";
 import { LoginPage } from "@pages/LoginPage";
 import { getStorage } from "firebase/storage";
-import { Suspense } from "react";
 import { MessagesPage } from "@pages/MessagesPage";
 import { FilesPage } from "@pages/FilesPage";
 

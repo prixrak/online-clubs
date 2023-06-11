@@ -13,6 +13,7 @@ import { NavLink as RectRouterLink } from "react-router-dom";
 import { paths } from "@constants/paths";
 import classNames from "classnames";
 import { ITopic } from "@interfaces/ITopic";
+import { Loader } from "@components/Loader";
 
 interface Props {}
 
@@ -42,7 +43,7 @@ export const TopicPage: FC<Props> = () => {
     { name: "Files", path: paths.files, icon: FilesIcon },
   ];
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loader />}>
       <div className={styles.root}>
         <Stack className={styles.topBar}>
           <Stack className={styles.header}>
